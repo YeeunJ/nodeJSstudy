@@ -1,11 +1,38 @@
-var express = require('express'); // 설치한 express module을 불러와서 변수에 담기!!
-var app = express(); //express를 실행, app object 초기화!!
+var express = require('express');
+var sqlite3 = require('sqlite3').verbose();
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
+var app = express();
 
-app.get('/', function(req, res) { // '/' 위치에 'get'요청을 받는 경우,
-  res.send('<h1>Hello World!!</h1>'); // 메세지를 보내는 것입니다!!
+let db = new sqlite3.Database('./db/Tproject.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+        console.error(err.message);
+        console.error(dbPath);
+    } else {
+        console.log('Connected to the database.');
+    }
 });
 
-var port = 3000; // 포트 번호!!
-app.listen(port, function(){ // 3000번 포트에 node.js 서버 연결!!
-  console.log('주소!!-> http://localhost:'+port); //http://localhost:3000 으로 접속할 수 있습니다~:)
+// Other settings
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname+'/public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(methodOverride('_method'));
+
+// Routes
+app.use('/', require('./routes/home'));
+app.use('/posts', require('./routes/posts'));
+
+// Port setting
+var port = 3000;
+app.listen(port, function(){
+  console.log('server on! http://localhost:'+port);
+});
+
+db.close((err) =>{
+  if(err){
+    console.error(err.message);
+  }
+  console.log('Close the database connection.');
 });

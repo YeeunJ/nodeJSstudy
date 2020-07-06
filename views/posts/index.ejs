@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('../partials/head') %>
+  </head>
+  <body>
+    <%- include('../partials/nav') %>
+
+    <div class="container mb-3">
+
+      <h2 class="mb-3">Board</h2>
+
+      <table class="board-table table table-sm border-bottom">
+
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col" class="date">Date</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if(data == null || data.length == 0){ %>
+            <tr>
+              <td colspan=2> There is no data to show :( </td>
+            </tr>
+          <% } %>
+          <% data.forEach(function(d) { %>
+            <tr>
+              <td>
+                <a href="/posts/<%= d.id %>"><div class="ellipsis"><%= d.title %></div></a>
+              </td>
+              <td class="date">
+                <span id = "titleDate" data-date="<%= d.date %>"><%= d.date %></span>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <div>
+        <a class="btn btn-primary" href="/posts/new">New</a>
+      </div>
+    </div>
+  </body>
+</html>
